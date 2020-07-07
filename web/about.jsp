@@ -41,7 +41,7 @@
                     <div class="item">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="img/testimonials/testi-1.jpg" alt="">
+                                <img src="img/My_IMG.jpg" alt="">
                             </div>
                             <div class="col-lg-8">
                                 <div class="testi_text">
@@ -55,7 +55,7 @@
                     <div class="item">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="img/testimonials/testi-1.jpg" alt="">
+                                <img src="img/My_IMG.jpg" alt="">
                             </div>
                             <div class="col-lg-8">
                                 <div class="testi_text">
@@ -69,7 +69,7 @@
                     <div class="item">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="img/testimonials/testi-1.jpg" alt="">
+                                <img src="img/My_IMG.jpg" alt="">
                             </div>
                             <div class="col-lg-8">
                                 <div class="testi_text">
