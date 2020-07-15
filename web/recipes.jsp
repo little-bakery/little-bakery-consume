@@ -4,16 +4,18 @@
     Author     : duong
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Little Bakery</title>
+        <link rel="icon" href="${pageContext.request.contextPath}/img/cake.png"/>
     </head>
     <body>
         <%@include file="header.jsp" %>
-
+        
         <%@include file="footer.jsp" %>
     </body>
 </html>

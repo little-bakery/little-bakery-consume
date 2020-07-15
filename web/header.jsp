@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="en">
     <head>
@@ -37,27 +38,34 @@
                             <ul class="nav navbar-nav menu_nav ml-auto">
                                 <li class="nav-item"><a class="nav-link" href="index.jsp">Home</a></li> 
                                 <li class="nav-item"><a class="nav-link" href="about.jsp">About</a></li> 
-                                <li class="nav-item"><a class="nav-link" href="recipes.jsp">Menu</a></li>                                 
-                                <li class="nav-item"><a class="nav-link" href="blog.jsp">Blog</a></li>  
-                                <li class="nav-item"><a class="nav-link" href="contact.jsp">Contact</a></li>
+                                <li class="nav-item"><a class="nav-link" href="InitController">Find your Cake</a></li>                              
+                                <li class="nav-item"><a class="nav-link" href="blog.jsp">Blog</a></li>
+                                <li class="nav-item"><a class="nav-link" href="contact.jsp">Contact</a></li>                                
+                                    <c:if test="${sessionScope.INFO != null}">
+                                    <li class="nav-item submenu dropdown">
+                                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">${sessionScope.INFO.fullname}</a>
+                                        <ul class="dropdown-menu">
+                                            <li class="nav-item"><a class="nav-link" href="GetUserFavoriteCollection">Your Collection</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="LogoutController">Logout</a></li>
+                                        </ul>
+                                    </li>
+                                </c:if>
+                                <c:if test="${sessionScope.INFO == null}">
+                                    <li class="nav-item"><a class="nav-link" href="login.jsp">Login</a></li>                                
+                                    </c:if> 
                             </ul>
                         </div> 
                     </div>
                 </nav>
-            </div>
+            </div>            
         </header>
         <!--================Header Menu Area =================-->
-
-        <!--================Home Banner Area =================-->
         <section class="banner_area">
             <div class="banner_inner d-flex align-items-center">
                 <div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background=""></div>
                 <div class="container">
                     <div class="banner_content text-center">
-                        <h2>Our Menu</h2>
-                        <div class="page_link">
-                            <a href="index.html">Home</a>
-                            <a href="menu.html">Menu</a>
+                        <div class="page_link">                            
                         </div>
                     </div>
                 </div>

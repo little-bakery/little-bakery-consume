@@ -9,7 +9,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Little Bakery</title>
+        <link rel="icon" href="${pageContext.request.contextPath}/img/cake.png"/>
     </head>
     <body>
         <%@include file="header.jsp" %>
