@@ -11,8 +11,8 @@ import java.io.Serializable;
  *
  * @author duong
  */
-public class CakePoint implements Serializable, Comparable<CakePoint>{
-   
+public class CakePoint implements Serializable, Comparable<CakePoint> {
+
     private Cake cake;
     private Integer point;
 
@@ -35,5 +35,18 @@ public class CakePoint implements Serializable, Comparable<CakePoint>{
     @Override
     public int compareTo(CakePoint that) {
         return that.getCake().getViews() - this.getCake().getViews();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof CakePoint)) {
+            return false;
+        }
+        CakePoint other = (CakePoint) object;
+        if ((this.getCake().getId() == null && other.getCake().getId() != null) || (this.getCake().getId() != null && !this.getCake().getId().equals(other.getCake().getId()))) {
+            return false;
+        }
+        return true;
     }
 }

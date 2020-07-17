@@ -14,16 +14,19 @@
     </head>
     <body>
         <%@include file="header.jsp" %>
-        <form action="RegisterController" method="POST">
-            Username: <input type="text" name="txtUsername" /> <br/>
-            Password: <input type="password" name="txtPassword" /> <br/>
-            Confirm Password: <input type="password" name="txtConfirm" /> <br/>
-            FullName: <input type="text" name="txtFullName" /> <br/>
-            <input type="submit" name="Submit" value="Submit" /> <br/>
-        </form>
-        <c:if test="${requestScope.ERROR != null}">
-            <p style="color: red;">${requestScope.ERROR}</p>
-        </c:if>
+        <div class="container">
+            <h2>Register</h2>
+            <form action="RegisterController" method="POST">
+                <span class="text-right">Username: </span><input type="text" name="txtUsername" required="true"/> <br/>
+                <span class="text-right">Password: </span><input type="password" name="txtPassword" required="true"/> <br/>
+                <span class="text-right">Confirm Password: </span><input type="password" name="txtConfirm" required="true"/> <br/>
+                <span class="text-right">FullName: </span><input type="text" name="txtFullName" required="true" /> <br/>
+                <input type="submit" name="Submit" value="Submit" class="btn btn-info"/> <br/>
+            </form>
+            <c:if test="${requestScope.ERROR != null}">
+                <p style="color: red;">${requestScope.ERROR}</p>
+            </c:if>
+        </div>
         <%@include file="footer.jsp" %>
     </body>
 </html>

@@ -6,16 +6,25 @@
 package duongll.controller;
 
 import duongll.client.FavoriteClient;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import duongll.dto.Account;
-import duongll.dto.Favorite;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  *
@@ -39,8 +48,13 @@ public class GetUserFavoriteCollection extends HttpServlet {
             HttpSession session = request.getSession();
             String username = ((Account) session.getAttribute("INFO")).getUsername();
             FavoriteClient favoriteClient = new FavoriteClient();
-            List<Favorite> result = favoriteClient.getUserFavoriteCollection_XML(String.class, username, true);
-            request.setAttribute("RESULT", result);
+            String result = favoriteClient.getUserFavoriteCollectionXML_XML(username, "true");
+            result = result.replace("[", "]"); 
+            result = result.replaceAll("]", "");
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new InputSource(new StringReader(result)));            
+            request.setAttribute("DOC", doc);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

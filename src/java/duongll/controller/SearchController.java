@@ -12,18 +12,16 @@ import duongll.client.MaterialClient;
 import duongll.dto.Answers;
 import duongll.dto.Cake;
 import duongll.dto.CakePoint;
-import duongll.dto.CakeWeight;
-import duongll.dto.Category;
+import duongll.dto.CakeResult;
 import duongll.dto.Ingredient;
 import duongll.dto.Material;
 import duongll.utils.ConvertUtils;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -47,160 +45,62 @@ public class SearchController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        List<CakePoint> tmpResult = new ArrayList<>();
-        List<CakePoint> result = new ArrayList<>();
-        AnswerClient answerClient = new AnswerClient();
-        IngredientClient ingredientClient = new IngredientClient();
-        MaterialClient materialClient = new MaterialClient();
         CakeClient cakeClient = new CakeClient();
-        List<Cake> tmpList = cakeClient.findAll_XML(List.class);
+        List<CakeResult> result = new ArrayList<>();
+        List<Cake> cakeList = cakeClient.findAll_XML(List.class);
+        List<CakeResult> servesResultList = new ArrayList<>();
+        List<CakeResult> queryResultList;
         try {
-            String[] answerCategory = request.getParameterValues("category");
-            if (answerCategory != null) {
-                for (int i = 0; i < answerCategory.length; i++) {
-                    Answers tmp = answerClient.find_XML(Answers.class, answerCategory[i]);
-                    for (Cake cake : tmpList) {
-                        if (cake.getCategoryid().getName().equalsIgnoreCase(tmp.getName())) {
-                            CakePoint cakePoint = new CakePoint();
-                            cakePoint.setCake(cake);
-                            cakePoint.setPoint(tmp.getPoint());
-                            tmpResult.add(cakePoint);
-                        }
-                    }
-                }
-            }
-            // initial material and ingredient for cake in result list
-            for (CakePoint cakePoint : tmpResult) {
-                Cake tmpCake = cakePoint.getCake();
-                List<Ingredient> tmpIngredientList = ingredientClient.findIngredientByCakeId_XML(List.class, cakePoint.getCake().getId() + "");
-                if (tmpIngredientList != null) {
-                    for (Ingredient ingredient : tmpIngredientList) {
-                        List<Material> tmpMaterialList = materialClient.findMaterialByIngredientId_XML(List.class, ingredient.getId() + "");
-                        if (tmpMaterialList != null) {
-                            ingredient.setMaterialCollection(tmpMaterialList);
-                        }
-                    }
-                    tmpCake.setIngredientCollection(tmpIngredientList);
-                }
-            }
-            String serves = request.getParameter("serves");
-            int tmpServes = Integer.parseInt(serves);
-            if (serves != null) {
-                if (!serves.isEmpty()) {
-                    for (CakePoint cakePoint : tmpResult) {
-                        int tmpPoint = 0;
-                        if (cakePoint.getCake().getServes() == tmpServes) {
-                            tmpPoint = cakePoint.getPoint().intValue() + 5;
-                            cakePoint.setPoint(tmpPoint);
-                        } else if (0 < Math.abs(cakePoint.getCake().getServes() - tmpServes) && Math.abs(cakePoint.getCake().getServes() - tmpServes) < 5) {
-                            tmpPoint = cakePoint.getPoint().intValue() + 3;
-                            cakePoint.setPoint(tmpPoint);
-                        } else if (5 <= Math.abs(cakePoint.getCake().getServes() - tmpServes) && Math.abs(cakePoint.getCake().getServes() - tmpServes) < 10) {
-                            tmpPoint = cakePoint.getPoint().intValue() + 2;
-                            cakePoint.setPoint(tmpPoint);
-                        } else if (10 <= Math.abs(cakePoint.getCake().getServes() - tmpServes)) {
-                            tmpPoint = cakePoint.getPoint().intValue() + 1;
-                            cakePoint.setPoint(tmpPoint);
-                        }
-                    }
+
+            String listParam = "";
+            String[] categoryAnswer = request.getParameterValues("category");
+            if (categoryAnswer != null) {
+                for (int i = 0; i < categoryAnswer.length; i++) {
+                    listParam += categoryAnswer[i] + ", ";
                 }
             }
             int sizeQues = Integer.parseInt(request.getParameter("size"));
             for (int i = 0; i < (sizeQues + 1); i++) {
                 String answer = request.getParameter("ans" + i);
                 if (answer != null) {
-                    Answers tmp = answerClient.find_XML(Answers.class, answer);
-                    if (tmp.getName().equalsIgnoreCase("yes")) {
-                        for (CakePoint cakePoint : tmpResult) {
-                            boolean fitAnswer = false;
-                            if (tmp.getQuestionid().getTag().equalsIgnoreCase("material")) {
-                                if (tmp.getQuestionid().getKeyword() != null) {
-                                    for (Ingredient ingredient : cakePoint.getCake().getIngredientCollection()) {
-                                        for (Material material : ingredient.getMaterialCollection()) {
-                                            if (material.getName().equalsIgnoreCase(tmp.getQuestionid().getKeyword())) {
-                                                fitAnswer = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            } else if (tmp.getQuestionid().getTag().equalsIgnoreCase("serves")) {
-                                if (tmp.getQuestionid().getKeyword() != null) {
-                                    if (Integer.parseInt(tmp.getQuestionid().getKeyword()) == cakePoint.getCake().getServes().intValue()) {
-                                        fitAnswer = true;
-                                    }
-                                }
-                            } else if (tmp.getQuestionid().getTag().equalsIgnoreCase("time")) {
-                                if (tmp.getQuestionid().getKeyword() != null) {
-                                    int tmpTime = ConvertUtils.convertTimeToMinute(tmp.getQuestionid().getKeyword());
-                                    int cakeTime = ConvertUtils.convertTimeToMinute(cakePoint.getCake().getTime());
-                                    if (cakeTime == tmpTime) {
-                                        fitAnswer = true;
-                                    }
-                                }
-                            } else if (tmp.getQuestionid().getTag().equalsIgnoreCase("category")) {
-                                if (tmp.getQuestionid().getKeyword() != null) {
-                                    if (cakePoint.getCake().getCategoryid().getName().equalsIgnoreCase(tmp.getQuestionid().getKeyword())) {
-                                        fitAnswer = true;
-                                    }
-                                }
-                            }
-                            if (fitAnswer) {
-                                int tmpPoint = tmp.getPoint().intValue() + cakePoint.getPoint().intValue();
-                                cakePoint.setPoint(tmpPoint);
-                            }
-                        }
-                    } else if (tmp.getName().equalsIgnoreCase("no")) {
-                        for (CakePoint cakePoint : tmpResult) {
-                            boolean fitAnswer = false;
-                            if (tmp.getQuestionid().getTag().equalsIgnoreCase("material")) {
-                                if (tmp.getQuestionid().getKeyword() != null) {
-                                    fitAnswer = true;
-                                    for (Ingredient ingredient : cakePoint.getCake().getIngredientCollection()) {
-                                        for (Material material : ingredient.getMaterialCollection()) {
-                                            if (material.getName().equalsIgnoreCase(tmp.getQuestionid().getKeyword())) {
-                                                fitAnswer = false;
-                                            }
-                                        }
-                                    }
-                                }
-                            } else if (tmp.getQuestionid().getTag().equalsIgnoreCase("serves")) {
-                                if (tmp.getQuestionid().getKeyword() != null) {
-                                    if (Integer.parseInt(tmp.getQuestionid().getKeyword()) != cakePoint.getCake().getServes().intValue()) {
-                                        fitAnswer = true;
-                                    }
-                                }
-                            } else if (tmp.getQuestionid().getTag().equalsIgnoreCase("time")) {
-                                if (tmp.getQuestionid().getKeyword() != null) {
-                                    int tmpTime = ConvertUtils.convertTimeToMinute(tmp.getQuestionid().getKeyword());
-                                    int cakeTime = ConvertUtils.convertTimeToMinute(cakePoint.getCake().getTime());
-                                    if (cakeTime != tmpTime) {
-                                        fitAnswer = true;
-                                    }
-                                }
-                            } else if (tmp.getQuestionid().getTag().equalsIgnoreCase("category")) {
-                                if (tmp.getQuestionid().getKeyword() != null) {
-                                    if (!cakePoint.getCake().getCategoryid().getName().equalsIgnoreCase(tmp.getQuestionid().getKeyword())) {
-                                        fitAnswer = true;
-                                    }
-                                }
-                            }
-                            if (fitAnswer) {
-                                int tmpPoint = tmp.getPoint().intValue() + cakePoint.getPoint().intValue();
-                                cakePoint.setPoint(tmpPoint);
-                            }
-                        }
+                    listParam += answer + ", ";
+                }
+            }
+            listParam = listParam.trim().substring(0, listParam.length() - 2);
+            String serves = request.getParameter("serves");
+            if (serves != null) {
+                int servesNumber = Integer.parseInt(serves);
+                for (Cake cake : cakeList) {
+                    CakeResult cakeResult = new CakeResult();
+                    if (cake.getServes() == servesNumber) {
+                        cakeResult.setCake(cake);
+                        cakeResult.setPoint(5);
+                    } else if (0 < Math.abs(cake.getServes() - servesNumber) && Math.abs(cake.getServes() - servesNumber) < 5) {
+                        cakeResult.setCake(cake);
+                        cakeResult.setPoint(3);
+                    } else if (5 <= Math.abs(cake.getServes() - servesNumber) && Math.abs(cake.getServes() - servesNumber) < 10) {
+                        cakeResult.setCake(cake);
+                        cakeResult.setPoint(2);
+                    } else if (10 <= Math.abs(cake.getServes() - servesNumber)) {
+                        cakeResult.setCake(cake);
+                        cakeResult.setPoint(1);
+                    }
+                    servesResultList.add(cakeResult);
+                }
+            }
+            queryResultList = cakeClient.findResultForUser_XML(List.class, listParam);
+            for (CakeResult servesResult : servesResultList) {
+                for (CakeResult queryResult : queryResultList) {
+                    if (queryResult.getCake().getId().intValue() == servesResult.getCake().getId().intValue()) {
+                        int tmpPoint = servesResult.getPoint() + queryResult.getPoint();
+                        queryResult.setPoint(tmpPoint);
+                        break;
                     }
                 }
             }
-            CakePoint maxPointResult = tmpResult.stream().max(Comparator.comparing(CakePoint::getPoint)).get();
-            for (CakePoint cakePoint : tmpResult) {
-                if (cakePoint.getPoint().intValue() == maxPointResult.getPoint().intValue()) {
-                    result.add(cakePoint);
-                }
-            }
-            if (result.size() >= 2) {
-                Collections.sort(result);
+            queryResultList = queryResultList.stream().sorted(Comparator.comparing(CakeResult::getPoint).reversed()).collect(Collectors.toList());
+            for (int i = 0; i < 50; i++) {
+                result.add(queryResultList.get(i));
             }
             request.setAttribute("RESULT", result);
         } catch (Exception e) {
@@ -210,7 +110,7 @@ public class SearchController extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

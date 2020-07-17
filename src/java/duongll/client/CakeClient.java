@@ -6,6 +6,7 @@
 package duongll.client;
 
 import duongll.dto.Cake;
+import duongll.dto.CakeResult;
 import java.util.List;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
@@ -92,7 +93,8 @@ public class CakeClient {
 
     public <T> List<Cake> findAll_XML(Class<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(new GenericType<List<Cake>>(){});
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(new GenericType<List<Cake>>() {
+        });
     }
 
     public <T> T findAll_JSON(Class<T> responseType) throws ClientErrorException {
@@ -131,5 +133,23 @@ public class CakeClient {
     public void close() {
         client.close();
     }
-    
+
+    public <T> List<CakeResult> findResultForUser_XML(Class<T> responseType, String answerid) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        if (answerid != null) {
+            resource = resource.queryParam("answerid", answerid);
+        }
+        resource = resource.path("findResult");
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(new GenericType<List<CakeResult>>() {
+        });
+    }
+
+    public <T> T findResultForUser_JSON(Class<T> responseType, String answerid) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        if (answerid != null) {
+            resource = resource.queryParam("answerid", answerid);
+        }
+        resource = resource.path("findResult");
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
 }

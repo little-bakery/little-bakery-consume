@@ -5,12 +5,9 @@
  */
 package duongll.client;
 
-import duongll.dto.Favorite;
-import java.util.List;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
 
 /**
  * Jersey REST client generated for REST resource:FavoriteFacadeREST
@@ -50,19 +47,6 @@ public class FavoriteClient {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
     }
 
-    public <T> List<Favorite> getUserFavoriteCollection_XML(Class<T> responseType, String username, Boolean available) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("getAll/{0}", new Object[]{username}));
-        resource = resource.queryParam("available", available);
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(new GenericType<List<Favorite>>(){});
-    }
-
-    public <T> T getUserFavoriteCollection_JSON(Class<T> responseType, String username) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("getAll/{0}", new Object[]{username}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
-    }
-
     public <T> T find_XML(Class<T> responseType, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
@@ -85,6 +69,24 @@ public class FavoriteClient {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("{0}/{1}", new Object[]{from, to}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
+    public String getUserFavoriteCollectionXML_XML(String username, String available) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        if (available != null) {
+            resource = resource.queryParam("available", available);
+        }
+        resource = resource.path(java.text.MessageFormat.format("getAll/{0}", new Object[]{username}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(String.class);
+    }
+
+    public String getUserFavoriteCollectionXML_JSON(String username, String available) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        if (available != null) {
+            resource = resource.queryParam("available", available);
+        }
+        resource = resource.path(java.text.MessageFormat.format("getAll/{0}", new Object[]{username}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
     }
 
     public <T> T updateAvailableFavorite_XML(Object requestEntity, Class<T> responseType, String id) throws ClientErrorException {

@@ -20,7 +20,6 @@ public class Questions implements Serializable {
     private Long id;
     private String name;
     private String tag;
-    private String keyword;
 
     public Questions() {
     }
@@ -51,14 +50,4 @@ public class Questions implements Serializable {
     public void setTag(String tag) {
         this.tag = tag;
     }
-
-    @XmlElement
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
 }

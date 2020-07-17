@@ -56,7 +56,11 @@ public class DetailController extends HttpServlet {
         Cake result = null;
         try {
             HttpSession session = request.getSession();
-            String username = ((Account) session.getAttribute("INFO")).getUsername();
+            Account accountTmp = (Account) session.getAttribute("INFO");
+            String username = null;
+            if (accountTmp != null) {
+                username = accountTmp.getUsername();
+            }
             String id = request.getParameter("id");
             result = cakeClient.findByCakeId_XML(Cake.class, id);
             List<Ingredient> listIngredient = ingredientClient.findIngredientByCakeId_XML(List.class, id);
@@ -66,11 +70,11 @@ public class DetailController extends HttpServlet {
             }
             result.setIngredientCollection(listIngredient);
             List<CakePreparation> cakePreparationList = cakePreparationClient.findPreparationByCakeId_XML(List.class, id);
-            result.setCakePreparations(cakePreparationList);
+            result.setCakePreparations(cakePreparationList);            
             if (result != null && username != null) {
-                favorite = favoriteClient.findFavoriteFromUser_XML(Favorite.class, result.getId().toString(), username);               
-                request.setAttribute("FAVO", favorite);
-            }            
+                favorite = favoriteClient.findFavoriteFromUser_XML(Favorite.class, result.getId().toString(), username);
+            }
+            request.setAttribute("FAVO", favorite);
             request.setAttribute("DETAIL", result);
         } catch (Exception e) {
             log("Log at Detail Controller: " + e.getMessage());

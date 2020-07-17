@@ -15,73 +15,72 @@
     </head>
     <body>
         <%@include file="header.jsp" %>
+        &nbsp;
         <c:if test="${requestScope.DETAIL != null}">
-            <div>
-                <div style="float: left;">
-                    <img src="${requestScope.DETAIL.image}" width="300" height="300"/>
-                </div>
-                <div style="float: right;">
-                    <h1>${requestScope.DETAIL.name}</h1>
-                    <p>${requestScope.DETAIL.description}</p>
-                    <div>
-                        <p>Total Times: ${requestScope.DETAIL.time}</p>
-                        <p>Serves: ${requestScope.DETAIL.serves}</p>
+            <div class="container">
+                <div class="row">
+                    <div class="col-4">
+                        <img src="${requestScope.DETAIL.image}" class="img-fluid"/>
+                    </div>
+                    <div class="col-6">
+                        <h1 class="text-center" style="color: orange">${requestScope.DETAIL.name}</h1>
+                        <p class="h6 text-heading">${requestScope.DETAIL.description}</p>
+                        <div class="row">
+                            <span class="badge badge-primary">Total Times:</span> <span>${requestScope.DETAIL.time}</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                                     
+                            <span class="badge badge-secondary">Serves: </span> <span>${requestScope.DETAIL.serves}</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+                            <c:if test="${sessionScope.INFO != null}">
+                                <c:if test="${requestScope.FAVO == null}">
+                                    <a href="AddToFavoriteController?cakeid=${requestScope.DETAIL.id}&status=new" class="btn btn-info">Add to Favorite</a>
+                                </c:if>
+                                <c:if test="${requestScope.FAVO.available == true}">
+                                    <a href="AddToFavoriteController?cakeid=${requestScope.DETAIL.id}&status=remove" class="btn btn-danger">Remove from Favorite</a>
+                                </c:if>
+                                <c:if test="${requestScope.FAVO.available == false}">
+                                    <a href="AddToFavoriteController?cakeid=${requestScope.DETAIL.id}&status=add" class="btn btn-info">Add to Favorite</a>
+                                </c:if>
+                            </c:if>
+                        </div>                        
                     </div>
                 </div>
-            </div>
-            <div>
-                <div style="float: left;">
-                    <c:if test="${requestScope.DETAIL.ingredientCollection != null}">
-                        <c:if test="${not empty requestScope.DETAIL.ingredientCollection}">
-                            <h3>Ingredient</h3>
-                            <c:forEach items="${requestScope.DETAIL.ingredientCollection}" var="ingredient" varStatus="counter">
-                                <c:choose>
-                                    <c:when test="${ingredient.name.equals('For the Food')}">
-                                        <h3>No Ingredient Title</h3>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <h3>${ingredient.name}</h3>
-                                    </c:otherwise>
-                                </c:choose>
-                                <c:if test="${ingredient.materialCollection != null}">
-                                    <c:if test="${not empty ingredient.materialCollection}">
-                                        <c:forEach items="${ingredient.materialCollection}" var="material" varStatus="counter">
-                                            <p>${material.unit} ${material.name}</p>
-                                        </c:forEach> 
-                                    </c:if>
-                                </c:if>                                
-                            </c:forEach>
+                <div class="row">
+                    <div class="col-4">
+                        <c:if test="${requestScope.DETAIL.ingredientCollection != null}">
+                            <c:if test="${not empty requestScope.DETAIL.ingredientCollection}">
+                                <h3>Ingredients</h3>
+                                <c:forEach items="${requestScope.DETAIL.ingredientCollection}" var="ingredient" varStatus="counter">
+                                    <c:choose>
+                                        <c:when test="${ingredient.name.equals('For the Food')}">
+                                            <h3 class="text-heading h3">No Ingredient Title</h3>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <h3 class="text-heading h3">${ingredient.name}</h3>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <c:if test="${ingredient.materialCollection != null}">
+                                        <c:if test="${not empty ingredient.materialCollection}">
+                                            <c:forEach items="${ingredient.materialCollection}" var="material" varStatus="counter">
+                                                <p class="text-left">${material.unit} ${material.name}</p>
+                                            </c:forEach> 
+                                        </c:if>
+                                    </c:if>                                
+                                </c:forEach>
+                            </c:if>
                         </c:if>
-                    </c:if>
-                </div>    
-                <div style="float: right;">                    
-                    <c:if test="${requestScope.DETAIL.cakePreparations != null}">
-                        <c:if test="${not empty requestScope.DETAIL.cakePreparations}">
-                            <h3>Preparations</h3>
-                            <c:forEach items="${requestScope.DETAIL.cakePreparations}" var="preparation" varStatus="counter">
-                                <p>${preparation.orderprepare}. ${preparation.contentprepare}</p>
-                            </c:forEach>
+                    </div>    
+                    <div class="col-6">                    
+                        <c:if test="${requestScope.DETAIL.cakePreparations != null}">
+                            <c:if test="${not empty requestScope.DETAIL.cakePreparations}">
+                                <h3 class="text-heading text-center h3">Preparations</h3>
+                                <c:forEach items="${requestScope.DETAIL.cakePreparations}" var="preparation" varStatus="counter">
+                                    <p><span class="text-justify">${preparation.orderprepare}</span>. ${preparation.contentprepare}</p>
+                                </c:forEach>
+                            </c:if>
                         </c:if>
-                    </c:if>
-                </div>
-            </div>
-            <c:if test="${sessionScope.INFO != null}">
-                <c:if test="${requestScope.FAVO == null}">
-                    <div>
-                        <a href="AddToFavoriteController?cakeid=${requestScope.DETAIL.id}&status=new" class="btn btn-info">Add This Cake to your Favorite</a>
                     </div>
-                </c:if>
-                <c:if test="${requestScope.FAVO.available == true}">
-                    <div>
-                        <a href="AddToFavoriteController?cakeid=${requestScope.DETAIL.id}&status=remove" class="btn btn-info">Remove This Cake From your Favorite</a>
-                    </div>
-                </c:if>
-                <c:if test="${requestScope.FAVO.available == false}">
-                    <div>
-                        <a href="AddToFavoriteController?cakeid=${requestScope.DETAIL.id}&status=add" class="btn btn-info">Add This Cake to your Favorite</a>
-                    </div>
-                </c:if>
+                </div>                
             </c:if>
-        </c:if>
+        </div>
     </body>
 </html>

@@ -22,14 +22,7 @@
                 <form action="SearchController" method="POST">
                     <c:forEach items="${requestScope.INFO.keySet()}" var="question" varStatus="counter">
                         <div>              
-                            <c:choose>
-                                <c:when test="${question.keyword != null}">
-                                    <h1>${question.name} ${question.keyword} ?</h1>
-                                </c:when>
-                                <c:otherwise>
-                                    <h1>${question.name}</h1>
-                                </c:otherwise>
-                            </c:choose>                            
+                            <h1>${question.name}</h1>                        
                             <c:choose>
                                 <c:when test="${question.id == 1}">
                                     <c:forEach items="${requestScope.INFO.get(question)}" var="answer" varStatus="counter">
@@ -37,7 +30,7 @@
                                         <label for="category">${answer.name}</label><br/>
                                     </c:forEach>
                                 </c:when>
-                                <c:when test="${question.id == 8}">
+                                <c:when test="${question.id == 6}">
                                     <input type="number" placeholder="Type in here" name="serves"/>
                                 </c:when>
                                 <c:otherwise>

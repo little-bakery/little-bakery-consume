@@ -5,6 +5,7 @@
  */
 package duongll.controller;
 
+import duongll.client.AccountClient;
 import duongll.client.CakeClient;
 import duongll.client.CakePreparationClient;
 import duongll.client.FavoriteClient;
@@ -44,6 +45,7 @@ public class AddToFavoriteController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         CakeClient cakeClient = new CakeClient();
+        AccountClient accountClient = new AccountClient();
         IngredientClient ingredientClient = new IngredientClient();
         FavoriteClient favoriteClient = new FavoriteClient();
         CakePreparationClient cakePreparationClient = new CakePreparationClient();
@@ -52,10 +54,13 @@ public class AddToFavoriteController extends HttpServlet {
         Cake result = null;
         try {
             HttpSession session = request.getSession();
-            String username = ((Account) session.getAttribute("INFO")).getUsername();
+            Account account = null;
+            if (session.getAttribute("INFO") != null) {
+                account = (Account) session.getAttribute("INFO");
+            }
             String id = request.getParameter("cakeid");
             result = cakeClient.findByCakeId_XML(Cake.class, id);
-            Favorite tmp = null;
+            Favorite favorite = null;
             List<Ingredient> listIngredient = ingredientClient.findIngredientByCakeId_XML(List.class, id);
             for (Ingredient ingredient : listIngredient) {
                 List<Material> materialList = materialClient.findMaterialByIngredientId_XML(List.class, ingredient.getId() + "");
@@ -68,20 +73,32 @@ public class AddToFavoriteController extends HttpServlet {
             switch (status) {
                 // add cake to user favorite collection
                 case "new":
-                    resultFavorite = favoriteClient.addToFavorite_XML(request, Favorite.class);
+                    if (account != null && result != null) {
+                        favorite = new Favorite();
+                        favorite.setCakeid(result);
+                        favorite.setAccount(account);
+                        favorite.setAvailable(true);
+                    }
+                    if (favorite != null) {
+                        resultFavorite = favoriteClient.addToFavorite_XML(favorite, Favorite.class);
+                    }
                     break;
                 //change status of the cake in the user favorite collection
                 case "add":
-                    tmp = favoriteClient.findFavoriteFromUser_XML(Favorite.class, id, username);
-                    tmp.setAvailable(true);
-                    resultFavorite = favoriteClient.updateAvailableFavorite_XML(tmp, Favorite.class, tmp.getId().toString());
-                    break;
+                    if (account != null) {
+                        favorite = favoriteClient.findFavoriteFromUser_XML(Favorite.class, id, account.getUsername());
+                        favorite.setAvailable(true);
+                        resultFavorite = favoriteClient.updateAvailableFavorite_XML(favorite, Favorite.class, favorite.getId().toString());
+                        break;
+                    }
                 //change status of the cake in the user favorite collection
                 case "remove":
-                    tmp = favoriteClient.findFavoriteFromUser_XML(Favorite.class, id, username);
-                    tmp.setAvailable(false);
-                    resultFavorite = favoriteClient.updateAvailableFavorite_XML(tmp, Favorite.class, tmp.getId().toString());
-                    break;
+                    if (account != null) {
+                        favorite = favoriteClient.findFavoriteFromUser_XML(Favorite.class, id, account.getUsername());
+                        favorite.setAvailable(false);
+                        resultFavorite = favoriteClient.updateAvailableFavorite_XML(favorite, Favorite.class, favorite.getId().toString());
+                        break;
+                    }
             }
             request.setAttribute("FAVO", resultFavorite);
             request.setAttribute("DETAIL", result);
