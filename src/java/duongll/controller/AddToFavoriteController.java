@@ -72,8 +72,9 @@ public class AddToFavoriteController extends HttpServlet {
             String status = request.getParameter("status");
             switch (status) {
                 // add cake to user favorite collection
-                case "new":
+                case "New":
                     if (account != null && result != null) {
+                        System.out.println("INHER NEW");
                         favorite = new Favorite();
                         favorite.setCakeid(result);
                         favorite.setAccount(account);
@@ -84,7 +85,7 @@ public class AddToFavoriteController extends HttpServlet {
                     }
                     break;
                 //change status of the cake in the user favorite collection
-                case "add":
+                case "Add":
                     if (account != null) {
                         favorite = favoriteClient.findFavoriteFromUser_XML(Favorite.class, id, account.getUsername());
                         favorite.setAvailable(true);
@@ -92,7 +93,7 @@ public class AddToFavoriteController extends HttpServlet {
                         break;
                     }
                 //change status of the cake in the user favorite collection
-                case "remove":
+                case "Remove":
                     if (account != null) {
                         favorite = favoriteClient.findFavoriteFromUser_XML(Favorite.class, id, account.getUsername());
                         favorite.setAvailable(false);
@@ -100,12 +101,8 @@ public class AddToFavoriteController extends HttpServlet {
                         break;
                     }
             }
-            request.setAttribute("FAVO", resultFavorite);
-            request.setAttribute("DETAIL", result);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            request.getRequestDispatcher("detail.jsp").forward(request, response);
         }
     }
 

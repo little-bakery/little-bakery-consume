@@ -9,10 +9,6 @@
         <servlet-class>duongll.controller.SearchController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>TestController</servlet-name>
-        <servlet-class>duongll.controller.TestController</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>DetailController</servlet-name>
         <servlet-class>duongll.controller.DetailController</servlet-class>
     </servlet>
@@ -32,6 +28,14 @@
         <servlet-name>GetUserFavoriteCollection</servlet-name>
         <servlet-class>duongll.controller.GetUserFavoriteCollection</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SearchAllController</servlet-name>
+        <servlet-class>duongll.controller.SearchAllController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InitCategoryController</servlet-name>
+        <servlet-class>duongll.controller.InitCategoryController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>InitController</servlet-name>
         <url-pattern>/InitController</url-pattern>
@@ -39,10 +43,6 @@
     <servlet-mapping>
         <servlet-name>SearchController</servlet-name>
         <url-pattern>/SearchController</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>TestController</servlet-name>
-        <url-pattern>/TestController</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DetailController</servlet-name>
@@ -63,6 +63,14 @@
     <servlet-mapping>
         <servlet-name>GetUserFavoriteCollection</servlet-name>
         <url-pattern>/GetUserFavoriteCollection</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchAllController</servlet-name>
+        <url-pattern>/SearchAllController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InitCategoryController</servlet-name>
+        <url-pattern>/InitCategoryController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

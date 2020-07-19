@@ -38,7 +38,13 @@
                             <ul class="nav navbar-nav menu_nav ml-auto">
                                 <li class="nav-item"><a class="nav-link" href="index.jsp">Home</a></li> 
                                 <li class="nav-item"><a class="nav-link" href="about.jsp">About</a></li> 
-                                <li class="nav-item"><a class="nav-link" href="InitController">Find your Cake</a></li>                              
+                                <li class="nav-item submenu dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Recipes</a>
+                                    <ul class="dropdown-menu">
+                                        <li class="nav-item"><a class="nav-link" href="InitCategoryController">Explore All Recipes</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="InitController">Find Your Cake</a></li>
+                                    </ul>
+                                </li>
                                 <li class="nav-item"><a class="nav-link" href="blog.jsp">Blog</a></li>
                                 <li class="nav-item"><a class="nav-link" href="contact.jsp">Contact</a></li>                                
                                     <c:if test="${sessionScope.INFO != null}">

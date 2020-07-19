@@ -12,6 +12,74 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Little Bakery</title>
         <link rel="icon" href="${pageContext.request.contextPath}/img/cake.png"/>
+        <script type="text/javascript">
+            var new_XMLDOM = null;
+            <c:choose>
+                <c:when test="${requestScope.FAVO == null}">
+            var favor = null;
+                </c:when>
+                <c:otherwise>
+            var favor = ${requestScope.FAVO.available};
+                </c:otherwise>
+            </c:choose>
+            var update_status = null;
+            var xmlHttp;
+
+            function getXMLHttpObject() {
+                var xmlHttp = null;
+                try { // firefox, Opera, 8.0++, Safari
+                    xmlHttp = new XMLHttpRequest();
+                } catch (e) { // IE
+                    try {
+                        xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+                    } catch (e) {
+                        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                }
+                return xmlHttp;
+            }
+
+            function addToFavorite(id) {
+                xmlHttp = getXMLHttpObject();
+                if (xmlHttp === null) {
+                    alert("Your browser dose not support AJAX");
+                    return;
+                }
+                if (favor === null) {
+                    update_status = 'New';
+                } else {
+                    if (favor === true) {
+                        update_status = 'Remove';
+                    } else {
+                        update_status = 'Add';
+                    }
+                }
+                xmlHttp.open("POST", "AddToFavoriteController", true);
+                xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                var url = '';
+                var cakeid = document.getElementById(id);
+                if (update_status === 'New') {
+                    url = 'cakeid=' + id + '&status=' + update_status;
+                    cakeid.innerHTML = 'Remove from Favorite';
+                    update_status = 'Remove';
+                    cakeid.className = 'badge badge-danger';
+                    favor = true;
+                } else if (update_status === 'Remove') {
+                    url = 'cakeid=' + id + '&status=' + update_status;
+                    cakeid.innerHTML = 'Add to Favorite';
+                    cakeid.className = 'badge badge-info';
+                    update_status = 'Add';
+                    favor = false;
+                } else if (update_status === 'Add') {
+                    url = 'cakeid=' + id + '&status=' + update_status;
+                    update_status = 'Remove';
+                    cakeid.innerHTML = 'Remove from Favorite';
+                    cakeid.className = 'badge badge-danger';
+                    favor = true;
+                }
+                xmlHttp.send(url);
+            }
+        </script>
     </head>
     <body>
         <%@include file="header.jsp" %>
@@ -32,13 +100,13 @@
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
                             <c:if test="${sessionScope.INFO != null}">
                                 <c:if test="${requestScope.FAVO == null}">
-                                    <a href="AddToFavoriteController?cakeid=${requestScope.DETAIL.id}&status=new" class="btn btn-info">Add to Favorite</a>
+                                    <button class="badge badge-info" id="${requestScope.DETAIL.id}" onclick="addToFavorite(${requestScope.DETAIL.id})" value="${requestScope.DETAIL.id}">Add to Favorite</button>
                                 </c:if>
                                 <c:if test="${requestScope.FAVO.available == true}">
-                                    <a href="AddToFavoriteController?cakeid=${requestScope.DETAIL.id}&status=remove" class="btn btn-danger">Remove from Favorite</a>
+                                    <button class="badge badge-danger" id="${requestScope.DETAIL.id}" onclick="addToFavorite(${requestScope.DETAIL.id})" value="${requestScope.DETAIL.id}">Remove from Favorite</button>
                                 </c:if>
                                 <c:if test="${requestScope.FAVO.available == false}">
-                                    <a href="AddToFavoriteController?cakeid=${requestScope.DETAIL.id}&status=add" class="btn btn-info">Add to Favorite</a>
+                                    <button class="badge badge-info" id="${requestScope.DETAIL.id}" onclick="addToFavorite(${requestScope.DETAIL.id})" value="${requestScope.DETAIL.id}">Add to Favorite</button>
                                 </c:if>
                             </c:if>
                         </div>                        

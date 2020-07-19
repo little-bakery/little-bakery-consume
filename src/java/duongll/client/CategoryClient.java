@@ -106,7 +106,6 @@ public class CategoryClient {
         WebTarget resource = webTarget;
         GenericType<List<Category>> resultList = new GenericType<List<Category>>() {};
         Response response = webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML_TYPE).get();
-        System.out.println("CODE: " + response.getStatus());
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML_TYPE).get(resultList);
     }
 

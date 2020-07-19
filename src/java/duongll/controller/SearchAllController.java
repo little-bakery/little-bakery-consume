@@ -5,52 +5,63 @@
  */
 package duongll.controller;
 
-import duongll.client.AnswerClient;
 import duongll.client.CakeClient;
-import duongll.client.CategoryClient;
-import duongll.client.QuestionClient;
-import duongll.dto.Answers;
-import duongll.dto.Cake;
-import duongll.dto.Category;
-import duongll.dto.Questions;
+import duongll.dto.CakeDto;
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 /**
  *
  * @author duong
  */
-public class InitController extends HttpServlet {
+public class SearchAllController extends HttpServlet {
 
-    private static final String SUCCESS = "index.jsp";
-    private static final String ERROR = "error.js";
-
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HashMap<Questions, List<Answers>> result = new HashMap<Questions, List<Answers>>();
-        List<Questions> listQuestion;
-        String URL = ERROR;        
-        try {            
-            QuestionClient questionClient = new QuestionClient();
-            AnswerClient answerClient = new AnswerClient();
-            listQuestion = questionClient.findALlQuestion_XML(List.class);
-            for (Questions questions : listQuestion) {
-                result.put(questions, answerClient.findByQuestionId_XML(List.class, questions.getId() + ""));
-            }            
-            request.setAttribute("INFO", result);
-            if (result != null) {
-                URL = SUCCESS;
+        CakeClient cakeClient = new CakeClient();
+        String result = "";
+        Document doc = null;
+        try {
+            String cakeName = request.getParameter("txtSearch");
+            String categoryId = request.getParameter("category");
+            if (categoryId != null && cakeName != null) {
+                result = cakeClient.listCakeBasedOnCategoryOrName_XML(List.class, categoryId, cakeName);
+            } else if (cakeName == null && categoryId != null) {
+                result = cakeClient.listCakeBasedOnCategoryOrName_XML(List.class, categoryId, "");
+            } else if (cakeName != null && categoryId == null) {
+                result = cakeClient.listCakeBasedOnCategoryOrName_XML(List.class, categoryId, "");
+            }
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            doc = db.parse(new InputSource(new StringReader(result)));
+            if (doc != null) {
+                request.setAttribute("RESULT", doc);
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            request.getRequestDispatcher(URL).forward(request, response);
+            request.getRequestDispatcher("recipes.jsp").forward(request, response);
         }
     }
 

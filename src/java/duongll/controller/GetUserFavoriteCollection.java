@@ -46,15 +46,18 @@ public class GetUserFavoriteCollection extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try {
             HttpSession session = request.getSession();
-            String username = ((Account) session.getAttribute("INFO")).getUsername();
-            FavoriteClient favoriteClient = new FavoriteClient();
-            String result = favoriteClient.getUserFavoriteCollectionXML_XML(username, "true");
-            result = result.replace("[", "]"); 
-            result = result.replaceAll("]", "");
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(new StringReader(result)));            
-            request.setAttribute("DOC", doc);
+            String username = "";
+            if (session.getAttribute("INFO") != null) {
+                username = ((Account) session.getAttribute("INFO")).getUsername();
+                FavoriteClient favoriteClient = new FavoriteClient();
+                String result = favoriteClient.getUserFavoriteCollectionXML_XML(username, "true");
+                result = result.replace("[", "]");
+                result = result.replaceAll("]", "");
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                Document doc = db.parse(new InputSource(new StringReader(result)));
+                request.setAttribute("DOC", doc);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

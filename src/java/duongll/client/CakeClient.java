@@ -6,6 +6,7 @@
 package duongll.client;
 
 import duongll.dto.Cake;
+import duongll.dto.CakeDto;
 import duongll.dto.CakeResult;
 import java.util.List;
 import javax.ws.rs.ClientErrorException;
@@ -152,4 +153,47 @@ public class CakeClient {
         resource = resource.path("findResult");
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
+
+    public <T> String listCakePagination_XML(Class<T> responseType) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path("find/paging");
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(String.class);
+    }
+
+    public <T> String listCakePagination_JSON(Class<T> responseType) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path("find/paging");
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
+    }
+
+    public <T> T calculatePageRender_XML(Class<T> responseType) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path("find/page");
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public <T> T calculatePageRender_JSON(Class<T> responseType) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path("find/page");
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
+    public <T> String listCakeBasedOnCategoryOrName_XML(Class<T> responseType, String categoryId, String cakeName) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("search", new Object[]{categoryId}));
+        if (cakeName != null) {
+            resource = resource.queryParam("name", cakeName);
+        }
+        if (categoryId != null) {
+            resource = resource.queryParam("categoryId", categoryId);
+        }
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(String.class);
+    }
+
+    public <T> T listCakeBasedOnCategoryOrName_JSON(Class<T> responseType, String categoryId) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("search/{0}", new Object[]{categoryId}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
 }
