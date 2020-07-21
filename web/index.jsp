@@ -31,7 +31,7 @@
                                     </c:forEach>
                                 </c:when>
                                 <c:when test="${question.id == 6}">
-                                    <input type="number" placeholder="Type in here" name="serves"/>
+                                    <input type="number" placeholder="Type in here" name="serves" min="1" max="100"/>
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach items="${requestScope.INFO.get(question)}" var="answer" varStatus="counter">

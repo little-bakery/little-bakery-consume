@@ -27,7 +27,6 @@
                                 <c:forEach items="${applicationScope.CATEGORY}" var="category" varStatus="counter">
                                     <option value="${category.id}">${category.name}</option>
                                 </c:forEach>
-                                <option value="none">All</option>
                             </select> 
                         </c:if>
                     </c:if>                    

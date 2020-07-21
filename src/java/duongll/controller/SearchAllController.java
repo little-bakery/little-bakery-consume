@@ -46,10 +46,12 @@ public class SearchAllController extends HttpServlet {
             String cakeName = request.getParameter("txtSearch");
             String categoryId = request.getParameter("category");
             if (categoryId != null && cakeName != null) {
-                result = cakeClient.listCakeBasedOnCategoryOrName_XML(List.class, categoryId, cakeName);
+                if (categoryId.equals("none")) {
+                    result = cakeClient.listCakeBasedOnCategoryOrName_XML(List.class, "", cakeName);
+                } else {
+                    result = cakeClient.listCakeBasedOnCategoryOrName_XML(List.class, categoryId, cakeName);
+                }
             } else if (cakeName == null && categoryId != null) {
-                result = cakeClient.listCakeBasedOnCategoryOrName_XML(List.class, categoryId, "");
-            } else if (cakeName != null && categoryId == null) {
                 result = cakeClient.listCakeBasedOnCategoryOrName_XML(List.class, categoryId, "");
             }
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
